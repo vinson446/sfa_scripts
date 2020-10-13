@@ -24,6 +24,7 @@ class SmartSaveUI(QtWidgets.QDialog):
         super(SmartSaveUI, self).__init__(parent=maya_main_window())
         self.setWindowTitle("Smart Save")
         self.setMinimumWidth(500)
+        self.setMaximumWidth(750)
         self.setMaximumHeight(200)
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
