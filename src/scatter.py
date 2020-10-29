@@ -25,14 +25,6 @@ class ScatterUI(QtWidgets.QDialog):
         self.create_ui()
         self.create_connections()
 
-    def _init_polygon_rot(self):
-        self.polygon_min_x_rot = 0
-        self.polygon_max_x_rot = 0
-        self.polygon_min_y_rot = 0
-        self.polygon_max_y_rot = 0
-        self.polygon_min_z_rot = 0
-        self.polygon_max_z_rot = 0
-
     def create_ui(self):
         self.title_lbl = QtWidgets.QLabel("Scatter Tool")
         self.title_lbl.setStyleSheet("font: bold 20px")
@@ -92,7 +84,7 @@ class ScatterUI(QtWidgets.QDialog):
 
     def create_connections(self):
         """Connect Signals and Slots"""
-        self.random_rot_btn.clicked.connect(self.rand_polygon_rot)
+        self.random_rot_btn.clicked.connect(self.rand_polygon_rot_offset)
         self.scatter_btn.clicked.connect(self.scatter_polygon_inst_on_vert)
 
     @QtCore.Slot()
@@ -111,7 +103,7 @@ class ScatterUI(QtWidgets.QDialog):
         cmds.delete(polygon_vert_list[0], "polygon_inst")
 
     @QtCore.Slot()
-    def rand_polygon_rot(self):
+    def rand_polygon_rot_offset(self):
         polygon_inst_list = cmds.ls("polygon_inst*")
         for inst in polygon_inst_list:
             try:
@@ -141,12 +133,20 @@ class ScatterUI(QtWidgets.QDialog):
                 self.polygon_min_z_rot = 0
                 self.polygon_max_z_rot = 0
 
-            rand_polygon_rot_x = random.uniform(self.polygon_min_x_rot,
-                                                self.polygon_max_x_rot)
-            rand_polygon_rot_y = random.uniform(self.polygon_min_y_rot,
-                                                self.polygon_max_y_rot)
-            rand_polygon_rot_z = random.uniform(self.polygon_min_z_rot,
-                                                self.polygon_max_z_rot)
+            current_rot = cmds.xform(inst, q=True, ro=True)
+            print(current_rot)
+            rand_polygon_rot_x_offset = random.uniform(
+                self.polygon_min_x_rot, self.polygon_max_x_rot)
+            rand_polygon_rot_y_offset = random.uniform(
+                self.polygon_min_y_rot, self.polygon_max_y_rot)
+            rand_polygon_rot_z_offset = random.uniform(
+                self.polygon_min_z_rot, self.polygon_max_z_rot)
 
-            cmds.rotate(rand_polygon_rot_x, rand_polygon_rot_y,
-                        rand_polygon_rot_z, inst, a=True, os=True)
+            cmds.rotate(current_rot[0] + rand_polygon_rot_x_offset,
+                        current_rot[1] + rand_polygon_rot_y_offset,
+                        current_rot[2] + rand_polygon_rot_z_offset,
+                        inst, a=True)
+
+        #@QtCore.Slot()
+        #def rand_polygon_scale(self):
+
