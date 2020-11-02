@@ -43,6 +43,43 @@ class ScatterUI(QtWidgets.QDialog):
         self.main_lay.addStretch()
         self.setLayout(self.main_lay)
 
+    def _create_header_rand_scale_ui(self):
+        layout = QtWidgets.QGridLayout()
+        self.header_scale_lbl = QtWidgets.QLabel("Random Scale")
+        self.header_scale_lbl.setStyleSheet("font: bold")
+        layout.addWidget(self.header_scale_lbl, 0, 0)
+        return layout
+
+    def _create_rand_scale_ui(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.random_min_scale_x_lbl = QtWidgets.QLabel("X Min")
+        self.random_min_scale_x_le = QtWidgets.QLineEdit()
+        self.random_max_scale_x_lbl = QtWidgets.QLabel("X Max")
+        self.random_max_scale_x_le = QtWidgets.QLineEdit()
+        self.random_min_scale_y_lbl = QtWidgets.QLabel("Y Min")
+        self.random_min_scale_y_le = QtWidgets.QLineEdit()
+        self.random_max_scale_y_lbl = QtWidgets.QLabel("Y Max")
+        self.random_max_scale_y_le = QtWidgets.QLineEdit()
+        self.random_min_scale_z_lbl = QtWidgets.QLabel("Z Min")
+        self.random_min_scale_z_le = QtWidgets.QLineEdit()
+        self.random_max_scale_z_lbl = QtWidgets.QLabel("Z Max")
+        self.random_max_scale_z_le = QtWidgets.QLineEdit()
+        self.random_scale_btn = QtWidgets.QPushButton("Scale")
+        layout.addWidget(self.random_min_scale_x_lbl)
+        layout.addWidget(self.random_min_scale_x_le)
+        layout.addWidget(self.random_max_scale_x_lbl)
+        layout.addWidget(self.random_max_scale_x_le)
+        layout.addWidget(self.random_min_scale_y_lbl)
+        layout.addWidget(self.random_min_scale_y_le)
+        layout.addWidget(self.random_max_scale_y_lbl)
+        layout.addWidget(self.random_max_scale_y_le)
+        layout.addWidget(self.random_min_scale_z_lbl)
+        layout.addWidget(self.random_min_scale_z_le)
+        layout.addWidget(self.random_max_scale_z_lbl)
+        layout.addWidget(self.random_max_scale_z_le)
+        layout.addWidget(self.random_scale_btn)
+        return layout
+
     def _create_header_rand_rot_ui(self):
         layout = QtWidgets.QGridLayout()
         self.header_rot_lbl = QtWidgets.QLabel("Random Rotation")
@@ -80,27 +117,6 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(self.random_rot_btn)
         return layout
 
-    def _create_header_rand_scale_ui(self):
-        layout = QtWidgets.QGridLayout()
-        self.header_scale_lbl = QtWidgets.QLabel("Random Scale")
-        self.header_scale_lbl.setStyleSheet("font: bold")
-        layout.addWidget(self.header_scale_lbl, 0, 0)
-        return layout
-
-    def _create_rand_scale_ui(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.random_min_scale_lbl = QtWidgets.QLabel("Minimum Scale")
-        self.random_min_scale_le = QtWidgets.QLineEdit()
-        self.random_max_scale_lbl = QtWidgets.QLabel("Maximum Scale")
-        self.random_max_scale_le = QtWidgets.QLineEdit()
-        self.random_rot_btn = QtWidgets.QPushButton("Scale")
-        layout.addWidget(self.random_min_scale_lbl)
-        layout.addWidget(self.random_min_scale_le)
-        layout.addWidget(self.random_max_scale_lbl)
-        layout.addWidget(self.random_max_scale_le)
-        layout.addWidget(self.random_rot_btn)
-        return layout
-
     def _create_scatter_ui(self):
         layout = QtWidgets.QHBoxLayout()
         self.scatter_btn = QtWidgets.QPushButton("Scatter")
@@ -109,6 +125,7 @@ class ScatterUI(QtWidgets.QDialog):
 
     def create_connections(self):
         """Connect Signals and Slots"""
+        self.random_scale_btn.clicked.connect(self.rand_polygon_scale)
         self.random_rot_btn.clicked.connect(self.rand_polygon_rot_offset)
         self.scatter_btn.clicked.connect(self.scatter_polygon_inst_on_vert)
 
@@ -125,7 +142,7 @@ class ScatterUI(QtWidgets.QDialog):
                 cmds.move(vert_pos[0], vert_pos[1], vert_pos[2],
                           new_instance)
 
-        cmds.delete(polygon_vert_list[0], "polygon_inst")
+        #cmds.delete(polygon_vert_list[0], "polygon_inst")
 
     @QtCore.Slot()
     def rand_polygon_rot_offset(self):
@@ -159,7 +176,7 @@ class ScatterUI(QtWidgets.QDialog):
                 self.polygon_max_z_rot = 0
 
             current_rot = cmds.xform(inst, q=True, ro=True)
-            print(current_rot)
+
             rand_polygon_rot_x_offset = random.uniform(
                 self.polygon_min_x_rot, self.polygon_max_x_rot)
             rand_polygon_rot_y_offset = random.uniform(
@@ -172,6 +189,44 @@ class ScatterUI(QtWidgets.QDialog):
                         current_rot[2] + rand_polygon_rot_z_offset,
                         inst, a=True)
 
-        #@QtCore.Slot()
-        #def rand_polygon_scale(self):
+    @QtCore.Slot()
+    def rand_polygon_scale(self):
+        polygon_inst_list = cmds.ls("polygon_inst*")
+        for inst in polygon_inst_list:
+            try:
+                min_scale_x = int(self.random_min_scale_x_le.text())
+                self.polygon_min_scale_x = min_scale_x
+                max_scale_x = int(self.random_max_scale_x_le.text())
+                self.polygon_max_scale_x = max_scale_x
+            except ValueError:
+                self.polygon_min_scale_x = 0
+                self.polygon_max_scale_x = 0
 
+            try:
+                min_scale_y = int(self.random_min_scale_y_le.text())
+                self.polygon_min_scale_y = min_scale_y
+                max_scale_y = int(self.random_max_scale_y_le.text())
+                self.polygon_max_scale_y = max_scale_y
+            except ValueError:
+                self.polygon_min_scale_y = 0
+                self.polygon_max_scale_y = 0
+
+            try:
+                min_scale_z = int(self.random_min_scale_z_le.text())
+                self.polygon_min_scale_z = min_scale_z
+                max_scale_z = int(self.random_max_scale_z_le.text())
+                self.polygon_max_scale_z = max_scale_z
+            except ValueError:
+                self.polygon_min_scale_z = 0
+                self.polygon_max_scale_z = 0
+
+            rand_scale_x = random.uniform(self.polygon_min_scale_x,
+                                          self.polygon_max_scale_x)
+            rand_scale_y = random.uniform(self.polygon_min_scale_y,
+                                          self.polygon_max_scale_y)
+            rand_scale_z = random.uniform(self.polygon_min_scale_z,
+                                          self.polygon_max_scale_z)
+            cmds.scale(rand_scale_x,
+                       rand_scale_y,
+                       rand_scale_z,
+                       inst, a=True)
