@@ -28,11 +28,15 @@ class ScatterUI(QtWidgets.QDialog):
     def create_ui(self):
         self.title_lbl = QtWidgets.QLabel("Scatter Tool")
         self.title_lbl.setStyleSheet("font: bold 20px")
+        self.header_rand_scale_lay = self._create_header_rand_scale_ui()
+        self.rand_scale_lay = self._create_rand_scale_ui()
         self.header_rand_rot_lay = self._create_header_rand_rot_ui()
         self.rand_rot_lay = self._create_rand_rot_ui()
         self.scatter_lay = self._create_scatter_ui()
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
+        self.main_lay.addLayout(self.header_rand_scale_lay)
+        self.main_lay.addLayout(self.rand_scale_lay)
         self.main_lay.addLayout(self.header_rand_rot_lay)
         self.main_lay.addLayout(self.rand_rot_lay)
         self.main_lay.addLayout(self.scatter_lay)
@@ -41,9 +45,9 @@ class ScatterUI(QtWidgets.QDialog):
 
     def _create_header_rand_rot_ui(self):
         layout = QtWidgets.QGridLayout()
-        self.descriptor_header_lbl = QtWidgets.QLabel("Rotation")
-        self.descriptor_header_lbl.setStyleSheet("font: bold")
-        layout.addWidget(self.descriptor_header_lbl, 0, 0)
+        self.header_rot_lbl = QtWidgets.QLabel("Random Rotation")
+        self.header_rot_lbl.setStyleSheet("font: bold")
+        layout.addWidget(self.header_rot_lbl, 0, 0)
         return layout
 
     def _create_rand_rot_ui(self):
@@ -73,6 +77,27 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(self.random_rot_min_z_le)
         layout.addWidget(self.random_rot_max_z_lbl)
         layout.addWidget(self.random_rot_max_z_le)
+        layout.addWidget(self.random_rot_btn)
+        return layout
+
+    def _create_header_rand_scale_ui(self):
+        layout = QtWidgets.QGridLayout()
+        self.header_scale_lbl = QtWidgets.QLabel("Random Scale")
+        self.header_scale_lbl.setStyleSheet("font: bold")
+        layout.addWidget(self.header_scale_lbl, 0, 0)
+        return layout
+
+    def _create_rand_scale_ui(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.random_min_scale_lbl = QtWidgets.QLabel("Minimum Scale")
+        self.random_min_scale_le = QtWidgets.QLineEdit()
+        self.random_max_scale_lbl = QtWidgets.QLabel("Maximum Scale")
+        self.random_max_scale_le = QtWidgets.QLineEdit()
+        self.random_rot_btn = QtWidgets.QPushButton("Scale")
+        layout.addWidget(self.random_min_scale_lbl)
+        layout.addWidget(self.random_min_scale_le)
+        layout.addWidget(self.random_max_scale_lbl)
+        layout.addWidget(self.random_max_scale_le)
         layout.addWidget(self.random_rot_btn)
         return layout
 
