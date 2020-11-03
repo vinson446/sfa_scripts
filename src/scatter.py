@@ -166,7 +166,7 @@ class ScatterUI(QtWidgets.QDialog):
         for inst in polygon_list:
             vert_pos = cmds.xform(inst, q=True, ws=True, t=True)
 
-            new_instance = cmds.instance(polygon_list, n="polygon_inst")
+            new_instance = cmds.instance(self.polygon_inst, n="polygon_inst")
             cmds.move(vert_pos[0], vert_pos[1], vert_pos[2],
                       new_instance)
 
@@ -179,9 +179,9 @@ class ScatterUI(QtWidgets.QDialog):
         random.shuffle(polygon_vert_list)
 
         try:
-            density_percentage = float(self.rand_density_le.text())
-            self.density_number = int(density_percentage *
-                                      len(polygon_vert_list))
+            density_percentage = int(self.rand_density_le.text())
+            self.density_number = density_percentage * len(polygon_vert_list)
+            self.density_number = self.density_number / 100
         except ValueError:
             self.density_number = 0
 
