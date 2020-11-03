@@ -64,9 +64,13 @@ class ScatterUI(QtWidgets.QDialog):
         layout = QtWidgets.QHBoxLayout()
         self.rand_density_lbl = QtWidgets.QLabel("Density Percentage")
         self.rand_density_le = QtWidgets.QLineEdit()
+        self.rand_density_le.setFixedWidth(50)
+        self.rand_density_le.setText("100")
+        self.rand_density_percent_lbl = QtWidgets.QLabel("%")
         self.rand_density_btn = QtWidgets.QPushButton("Scatter")
-        layout.addWidget(self.rand_density_lbl)
-        layout.addWidget(self.rand_density_le)
+        layout.addWidget(self.rand_density_lbl, 2, 0)
+        layout.addWidget(self.rand_density_le, 3, 0)
+        layout.addWidget(self.rand_density_percent_lbl, 6, 0)
         layout.addWidget(self.rand_density_btn)
         return layout
 
