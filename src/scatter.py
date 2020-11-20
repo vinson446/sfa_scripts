@@ -17,9 +17,8 @@ class ScatterUI(QtWidgets.QDialog):
     def __init__(self):
         super(ScatterUI, self).__init__(parent=maya_main_window())
         self.setWindowTitle("Scatter Tool")
-        self.setMinimumWidth(500)
         self.setMaximumWidth(600)
-        self.setMaximumHeight(200)
+        self.setMaximumHeight(300)
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
         self.create_ui()
@@ -30,51 +29,68 @@ class ScatterUI(QtWidgets.QDialog):
         self.title_lbl.setStyleSheet("font: bold 20px")
         self.header_rand_offset_lay = self._create_header_rand_offset_ui()
         self.rand_offset_lay = self._create_rand_offset_ui()
-        self.header_rand_density_lay = self._create_header_rand_density_ui()
-        self.rand_density_lay = self._create_rand_density_ui()
         self.header_rand_scale_lay = self._create_header_rand_scale_ui()
         self.rand_scale_lay = self._create_rand_scale_ui()
         self.header_rand_rot_lay = self._create_header_rand_rot_ui()
         self.rand_rot_lay = self._create_rand_rot_ui()
-        self.normal_lay = self._scatter_to_normals_ui()
+        self.header_add_settings_lay = self._create_header_add_settings_ui()
+        self.add_settings_lay = self._create_add_settings_ui()
         self.scatter_lay = self._create_scatter_ui()
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
-        self.main_lay.addLayout(self.header_rand_density_lay)
-        self.main_lay.addLayout(self.rand_density_lay)
         self.main_lay.addLayout(self.header_rand_offset_lay)
         self.main_lay.addLayout(self.rand_offset_lay)
         self.main_lay.addLayout(self.header_rand_scale_lay)
         self.main_lay.addLayout(self.rand_scale_lay)
         self.main_lay.addLayout(self.header_rand_rot_lay)
         self.main_lay.addLayout(self.rand_rot_lay)
+        self.main_lay.addLayout(self.header_add_settings_lay)
+        self.main_lay.addLayout(self.add_settings_lay)
         self.main_lay.addLayout(self.scatter_lay)
         self.main_lay.addStretch()
         self.setLayout(self.main_lay)
 
-    def _create_scatter_ui(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.scatter_btn = QtWidgets.QPushButton("Scatter")
-        layout.addWidget(self.scatter_btn)
-        return layout
-
-    def _create_header_rand_density_ui(self):
+    def _create_header_rand_offset_ui(self):
         layout = QtWidgets.QGridLayout()
-        self.header_density_lbl = QtWidgets.QLabel("Random Density Scatter")
-        self.header_density_lbl.setStyleSheet("font: bold")
-        layout.addWidget(self.header_density_lbl, 0, 0)
+        self.header_rot_lbl = QtWidgets.QLabel("Random Positional Offset")
+        self.header_rot_lbl.setStyleSheet("font: bold")
+        layout.addWidget(self.header_rot_lbl, 0, 0)
         return layout
 
-    def _create_rand_density_ui(self):
+    def _create_rand_offset_ui(self):
         layout = QtWidgets.QHBoxLayout()
-        self.rand_density_lbl = QtWidgets.QLabel("Density Percentage")
-        self.rand_density_le = QtWidgets.QLineEdit()
-        self.rand_density_le.setFixedWidth(50)
-        self.rand_density_le.setText("100")
-        self.rand_density_percent_lbl = QtWidgets.QLabel("%")
-        layout.addWidget(self.rand_density_lbl, 2, 0)
-        layout.addWidget(self.rand_density_le, 3, 0)
-        layout.addWidget(self.rand_density_percent_lbl, 6, 0)
+        self.rand_rot_min_x_lbl = QtWidgets.QLabel("X Min")
+        self.rand_rot_min_x_le = QtWidgets.QLineEdit()
+        self.rand_rot_min_x_le.setText("0")
+        self.rand_rot_max_x_lbl = QtWidgets.QLabel("X Max")
+        self.rand_rot_max_x_le = QtWidgets.QLineEdit()
+        self.rand_rot_max_x_le.setText("0")
+        self.rand_rot_min_y_lbl = QtWidgets.QLabel("Y Min")
+        self.rand_rot_min_y_le = QtWidgets.QLineEdit()
+        self.rand_rot_min_y_le.setText("0")
+        self.rand_rot_max_y_lbl = QtWidgets.QLabel("Y Max")
+        self.rand_rot_max_y_le = QtWidgets.QLineEdit()
+        self.rand_rot_max_y_le.setText("0")
+        self.rand_rot_min_z_lbl = QtWidgets.QLabel("Z Min")
+        self.rand_rot_min_z_le = QtWidgets.QLineEdit()
+        self.rand_rot_min_z_le.setText("0")
+        self.rand_rot_max_z_lbl = QtWidgets.QLabel("Z Max")
+        self.rand_rot_max_z_le = QtWidgets.QLineEdit()
+        self.rand_rot_max_z_le.setText("0")
+        self.rand_rot_btn = QtWidgets.QPushButton("Rotate")
+        layout.addWidget(self.rand_rot_min_x_lbl)
+        layout.addWidget(self.rand_rot_min_x_le)
+        layout.addWidget(self.rand_rot_max_x_lbl)
+        layout.addWidget(self.rand_rot_max_x_le)
+        layout.addWidget(self.rand_rot_min_y_lbl)
+        layout.addWidget(self.rand_rot_min_y_le)
+        layout.addWidget(self.rand_rot_max_y_lbl)
+        layout.addWidget(self.rand_rot_max_y_le)
+        layout.addWidget(self.rand_rot_min_z_lbl)
+        layout.addWidget(self.rand_rot_min_z_le)
+        layout.addWidget(self.rand_rot_max_z_lbl)
+        layout.addWidget(self.rand_rot_max_z_le)
+        layout.addWidget(self.rand_rot_btn)
         return layout
 
     def _create_header_rand_scale_ui(self):
@@ -163,53 +179,32 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(self.rand_rot_btn)
         return layout
 
-    def _create_header_rand_offset_ui(self):
-        layout = QtWidgets.QGridLayout()
-        self.header_rot_lbl = QtWidgets.QLabel("Random Positional Offset")
-        self.header_rot_lbl.setStyleSheet("font: bold")
-        layout.addWidget(self.header_rot_lbl, 0, 0)
-        return layout
-
-    def _create_rand_offset_ui(self):
+    def _create_scatter_ui(self):
         layout = QtWidgets.QHBoxLayout()
-        self.rand_rot_min_x_lbl = QtWidgets.QLabel("X Min")
-        self.rand_rot_min_x_le = QtWidgets.QLineEdit()
-        self.rand_rot_min_x_le.setText("0")
-        self.rand_rot_max_x_lbl = QtWidgets.QLabel("X Max")
-        self.rand_rot_max_x_le = QtWidgets.QLineEdit()
-        self.rand_rot_max_x_le.setText("0")
-        self.rand_rot_min_y_lbl = QtWidgets.QLabel("Y Min")
-        self.rand_rot_min_y_le = QtWidgets.QLineEdit()
-        self.rand_rot_min_y_le.setText("0")
-        self.rand_rot_max_y_lbl = QtWidgets.QLabel("Y Max")
-        self.rand_rot_max_y_le = QtWidgets.QLineEdit()
-        self.rand_rot_max_y_le.setText("0")
-        self.rand_rot_min_z_lbl = QtWidgets.QLabel("Z Min")
-        self.rand_rot_min_z_le = QtWidgets.QLineEdit()
-        self.rand_rot_min_z_le.setText("0")
-        self.rand_rot_max_z_lbl = QtWidgets.QLabel("Z Max")
-        self.rand_rot_max_z_le = QtWidgets.QLineEdit()
-        self.rand_rot_max_z_le.setText("0")
-        self.rand_rot_btn = QtWidgets.QPushButton("Rotate")
-        layout.addWidget(self.rand_rot_min_x_lbl)
-        layout.addWidget(self.rand_rot_min_x_le)
-        layout.addWidget(self.rand_rot_max_x_lbl)
-        layout.addWidget(self.rand_rot_max_x_le)
-        layout.addWidget(self.rand_rot_min_y_lbl)
-        layout.addWidget(self.rand_rot_min_y_le)
-        layout.addWidget(self.rand_rot_max_y_lbl)
-        layout.addWidget(self.rand_rot_max_y_le)
-        layout.addWidget(self.rand_rot_min_z_lbl)
-        layout.addWidget(self.rand_rot_min_z_le)
-        layout.addWidget(self.rand_rot_max_z_lbl)
-        layout.addWidget(self.rand_rot_max_z_le)
-        layout.addWidget(self.rand_rot_btn)
+        self.scatter_btn = QtWidgets.QPushButton("Scatter")
+        layout.addWidget(self.scatter_btn)
         return layout
 
-    def _scatter_to_normals_ui(self):
-        self.normal_cbox = QtWidgets.QCheckBox("Scatter To Normals")
+    def _create_header_add_settings_ui(self):
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(self.normal_cbox, 0, 0)
+        self.header_density_lbl = QtWidgets.QLabel("Additional Settings")
+        self.header_density_lbl.setStyleSheet("font: bold")
+        layout.addWidget(self.header_density_lbl, 0, 0)
+        return layout
+
+    def _create_add_settings_ui(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.rand_density_lbl = QtWidgets.QLabel("Density Percentage")
+        self.rand_density_le = QtWidgets.QLineEdit()
+        self.rand_density_le.setFixedWidth(50)
+        self.rand_density_le.setText("100")
+        self.rand_density_percent_lbl = QtWidgets.QLabel("%")
+        layout.addWidget(self.rand_density_lbl, 2, 0)
+        layout.addWidget(self.rand_density_le, 3, 0)
+        layout.addWidget(self.rand_density_percent_lbl, 6, 0)
+
+        self.normal_cbox = QtWidgets.QCheckBox("Scatter To Normals")
+        layout.addWidget(self.normal_cbox, 45, 0)
         return layout
 
     def create_connections(self):
