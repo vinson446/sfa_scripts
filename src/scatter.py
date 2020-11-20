@@ -212,18 +212,12 @@ class ScatterUI(QtWidgets.QDialog):
         self.rand_pos_btn.clicked.connect(self.rand_polygon_pos_offset)
         self.rand_scale_btn.clicked.connect(self.rand_polygon_scale)
         self.rand_rot_btn.clicked.connect(self.rand_polygon_rot_offset)
+        self.normal_cbox.stateChanged.connect(self.scatter_to_normals_check)
         self.scatter_btn.clicked.connect(self.get_rand_density)
 
-    def scatter_polygon_inst_on_vert(self, polygon_list):
-        """Scatter polygon instances on another object's vertices"""
-        for inst in polygon_list:
-            vert_pos = cmds.xform(inst, q=True, ws=True, t=True)
-
-            new_instance = cmds.instance(self.polygon_inst, n="polygon_inst")
-            cmds.move(vert_pos[0], vert_pos[1], vert_pos[2],
-                      new_instance)
-
-        #cmds.delete(self.polygon_inst, "polygon_inst")
+    @QtCore.Slot()
+    def scatter_to_normals_check(self):
+        self.scatter_to_normals = self.normal_cbox.isChecked()
 
     @QtCore.Slot()
     def rand_polygon_pos_offset(self):
@@ -379,4 +373,26 @@ class ScatterUI(QtWidgets.QDialog):
 
         density_polygon_inst_list = polygon_vert_list[:self.density_number]
         self.scatter_polygon_inst_on_vert(density_polygon_inst_list)
+
+    def scatter_polygon_inst_on_vert(self, polygon_list):
+        """Scatter polygon instances on another object's vertices"""
+        if self.scatter_to_normals is True:
+            for inst in polygon_list:
+                vert_pos = cmds.polyNormalPerVertex(q=True,
+                                                    xyz=True)
+
+                new_instance = cmds.instance(self.polygon_inst,
+                                             n="polygon_inst")
+                cmds.move(vert_pos[0], vert_pos[1], vert_pos[2],
+                          new_instance)
+
+            #cmds.delete(self.polygon_inst, "polygon_inst")
+        else:
+            for inst in polygon_list:
+                vert_pos = cmds.xform(inst, q=True, ws=True, t=True)
+
+                new_instance = cmds.instance(self.polygon_inst,
+                                             n="polygon_inst")
+                cmds.move(vert_pos[0], vert_pos[1], vert_pos[2],
+                          new_instance)
 
