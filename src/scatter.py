@@ -27,8 +27,8 @@ class ScatterUI(QtWidgets.QDialog):
     def create_ui(self):
         self.title_lbl = QtWidgets.QLabel("Scatter Tool")
         self.title_lbl.setStyleSheet("font: bold 20px")
-        self.header_rand_offset_lay = self._create_header_rand_offset_ui()
-        self.rand_offset_lay = self._create_rand_offset_ui()
+        self.header_rand_offset_lay = self._create_header_rand_pos_offset_ui()
+        self.rand_offset_lay = self._create_rand_pos_offset_ui()
         self.header_rand_scale_lay = self._create_header_rand_scale_ui()
         self.rand_scale_lay = self._create_rand_scale_ui()
         self.header_rand_rot_lay = self._create_header_rand_rot_ui()
@@ -50,47 +50,47 @@ class ScatterUI(QtWidgets.QDialog):
         self.main_lay.addStretch()
         self.setLayout(self.main_lay)
 
-    def _create_header_rand_offset_ui(self):
+    def _create_header_rand_pos_offset_ui(self):
         layout = QtWidgets.QGridLayout()
         self.header_rot_lbl = QtWidgets.QLabel("Random Positional Offset")
         self.header_rot_lbl.setStyleSheet("font: bold")
         layout.addWidget(self.header_rot_lbl, 0, 0)
         return layout
 
-    def _create_rand_offset_ui(self):
+    def _create_rand_pos_offset_ui(self):
         layout = QtWidgets.QHBoxLayout()
-        self.rand_rot_min_x_lbl = QtWidgets.QLabel("X Min")
-        self.rand_rot_min_x_le = QtWidgets.QLineEdit()
-        self.rand_rot_min_x_le.setText("0")
-        self.rand_rot_max_x_lbl = QtWidgets.QLabel("X Max")
-        self.rand_rot_max_x_le = QtWidgets.QLineEdit()
-        self.rand_rot_max_x_le.setText("0")
-        self.rand_rot_min_y_lbl = QtWidgets.QLabel("Y Min")
-        self.rand_rot_min_y_le = QtWidgets.QLineEdit()
-        self.rand_rot_min_y_le.setText("0")
-        self.rand_rot_max_y_lbl = QtWidgets.QLabel("Y Max")
-        self.rand_rot_max_y_le = QtWidgets.QLineEdit()
-        self.rand_rot_max_y_le.setText("0")
-        self.rand_rot_min_z_lbl = QtWidgets.QLabel("Z Min")
-        self.rand_rot_min_z_le = QtWidgets.QLineEdit()
-        self.rand_rot_min_z_le.setText("0")
-        self.rand_rot_max_z_lbl = QtWidgets.QLabel("Z Max")
-        self.rand_rot_max_z_le = QtWidgets.QLineEdit()
-        self.rand_rot_max_z_le.setText("0")
-        self.rand_rot_btn = QtWidgets.QPushButton("Rotate")
-        layout.addWidget(self.rand_rot_min_x_lbl)
-        layout.addWidget(self.rand_rot_min_x_le)
-        layout.addWidget(self.rand_rot_max_x_lbl)
-        layout.addWidget(self.rand_rot_max_x_le)
-        layout.addWidget(self.rand_rot_min_y_lbl)
-        layout.addWidget(self.rand_rot_min_y_le)
-        layout.addWidget(self.rand_rot_max_y_lbl)
-        layout.addWidget(self.rand_rot_max_y_le)
-        layout.addWidget(self.rand_rot_min_z_lbl)
-        layout.addWidget(self.rand_rot_min_z_le)
-        layout.addWidget(self.rand_rot_max_z_lbl)
-        layout.addWidget(self.rand_rot_max_z_le)
-        layout.addWidget(self.rand_rot_btn)
+        self.rand_pos_min_x_lbl = QtWidgets.QLabel("X Min")
+        self.rand_pos_min_x_le = QtWidgets.QLineEdit()
+        self.rand_pos_min_x_le.setText("0")
+        self.rand_pos_max_x_lbl = QtWidgets.QLabel("X Max")
+        self.rand_pos_max_x_le = QtWidgets.QLineEdit()
+        self.rand_pos_max_x_le.setText("0")
+        self.rand_pos_min_y_lbl = QtWidgets.QLabel("Y Min")
+        self.rand_pos_min_y_le = QtWidgets.QLineEdit()
+        self.rand_pos_min_y_le.setText("0")
+        self.rand_pos_max_y_lbl = QtWidgets.QLabel("Y Max")
+        self.rand_pos_max_y_le = QtWidgets.QLineEdit()
+        self.rand_pos_max_y_le.setText("0")
+        self.rand_pos_min_z_lbl = QtWidgets.QLabel("Z Min")
+        self.rand_pos_min_z_le = QtWidgets.QLineEdit()
+        self.rand_pos_min_z_le.setText("0")
+        self.rand_pos_max_z_lbl = QtWidgets.QLabel("Z Max")
+        self.rand_pos_max_z_le = QtWidgets.QLineEdit()
+        self.rand_pos_max_z_le.setText("0")
+        self.rand_pos_btn = QtWidgets.QPushButton("Offset")
+        layout.addWidget(self.rand_pos_min_x_lbl)
+        layout.addWidget(self.rand_pos_min_x_le)
+        layout.addWidget(self.rand_pos_max_x_lbl)
+        layout.addWidget(self.rand_pos_max_x_le)
+        layout.addWidget(self.rand_pos_min_y_lbl)
+        layout.addWidget(self.rand_pos_min_y_le)
+        layout.addWidget(self.rand_pos_max_y_lbl)
+        layout.addWidget(self.rand_pos_max_y_le)
+        layout.addWidget(self.rand_pos_min_z_lbl)
+        layout.addWidget(self.rand_pos_min_z_le)
+        layout.addWidget(self.rand_pos_max_z_lbl)
+        layout.addWidget(self.rand_pos_max_z_le)
+        layout.addWidget(self.rand_pos_btn)
         return layout
 
     def _create_header_rand_scale_ui(self):
@@ -209,6 +209,7 @@ class ScatterUI(QtWidgets.QDialog):
 
     def create_connections(self):
         """Connect Signals and Slots"""
+        self.rand_pos_btn.clicked.connect(self.rand_polygon_pos_offset)
         self.rand_scale_btn.clicked.connect(self.rand_polygon_scale)
         self.rand_rot_btn.clicked.connect(self.rand_polygon_rot_offset)
         self.scatter_btn.clicked.connect(self.get_rand_density)
@@ -225,20 +226,49 @@ class ScatterUI(QtWidgets.QDialog):
         #cmds.delete(self.polygon_inst, "polygon_inst")
 
     @QtCore.Slot()
-    def get_rand_density(self):
-        polygon_vert_list = cmds.ls(selection=True, fl=True)
-        self.polygon_inst = polygon_vert_list[0]
-        random.shuffle(polygon_vert_list)
+    def rand_polygon_pos_offset(self):
+        polygon_inst_list = cmds.ls("polygon_inst*")
+        for inst in polygon_inst_list:
+            try:
+                min_x_pos = int(self.rand_pos_min_x_le.text())
+                self.polygon_min_x_pos = min_x_pos
+                max_x_pos = int(self.rand_pos_max_x_le.text())
+                self.polygon_max_x_pos = max_x_pos
+            except ValueError:
+                self.polygon_min_x_pos = 0
+                self.polygon_max_x_pos = 0
 
-        try:
-            density_percentage = int(self.rand_density_le.text())
-            self.density_number = density_percentage * len(polygon_vert_list)
-            self.density_number = self.density_number / 100
-        except ValueError:
-            self.density_number = 0
+            try:
+                min_y_pos = int(self.rand_pos_min_y_le.text())
+                self.polygon_min_y_pos = min_y_pos
+                max_y_pos = int(self.rand_pos_max_y_le.text())
+                self.polygon_max_y_pos = max_y_pos
+            except ValueError:
+                self.polygon_min_y_pos = 0
+                self.polygon_max_y_pos = 0
 
-        density_polygon_inst_list = polygon_vert_list[:self.density_number]
-        self.scatter_polygon_inst_on_vert(density_polygon_inst_list)
+            try:
+                min_z_pos = int(self.rand_pos_min_z_le.text())
+                self.polygon_min_z_pos = min_z_pos
+                max_z_pos = int(self.rand_pos_max_z_le.text())
+                self.polygon_max_z_pos = max_z_pos
+            except ValueError:
+                self.polygon_min_z_pos = 0
+                self.polygon_max_z_pos = 0
+
+            current_pos = cmds.xform(inst, q=True, t=True)
+
+            rand_polygon_pos_x_offset = random.uniform(
+                self.polygon_min_x_pos, self.polygon_max_x_pos)
+            rand_polygon_pos_y_offset = random.uniform(
+                self.polygon_min_y_pos, self.polygon_max_y_pos)
+            rand_polygon_pos_z_offset = random.uniform(
+                self.polygon_min_z_pos, self.polygon_max_z_pos)
+
+            cmds.move(current_pos[0] + rand_polygon_pos_x_offset,
+                      current_pos[1] + rand_polygon_pos_y_offset,
+                      current_pos[2] + rand_polygon_pos_z_offset,
+                      inst, a=True)
 
     @QtCore.Slot()
     def rand_polygon_scale(self):
@@ -326,3 +356,21 @@ class ScatterUI(QtWidgets.QDialog):
                         current_rot[1] + rand_polygon_rot_y_offset,
                         current_rot[2] + rand_polygon_rot_z_offset,
                         inst, a=True)
+
+    @QtCore.Slot()
+    def get_rand_density(self):
+        polygon_vert_list = cmds.ls(selection=True, fl=True)
+        self.polygon_inst = polygon_vert_list[0]
+        random.shuffle(polygon_vert_list)
+
+        try:
+            density_percentage = int(self.rand_density_le.text())
+            self.density_number = density_percentage * len(
+                polygon_vert_list)
+            self.density_number = self.density_number / 100
+        except ValueError:
+            self.density_number = 0
+
+        density_polygon_inst_list = polygon_vert_list[
+                                    :self.density_number]
+        self.scatter_polygon_inst_on_vert(density_polygon_inst_list)
