@@ -22,6 +22,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.setMaximumHeight(300)
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
+        self.scatter_to_normals = False
         self.create_ui()
         self.create_connections()
 
