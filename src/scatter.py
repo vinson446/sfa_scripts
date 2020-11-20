@@ -361,8 +361,14 @@ class ScatterUI(QtWidgets.QDialog):
     def get_rand_density(self):
         polygon_vert_list = cmds.ls(selection=True, fl=True)
         self.polygon_inst = polygon_vert_list[0]
-        random.shuffle(polygon_vert_list)
 
+        # selected obj
+        if len(polygon_vert_list) == 2:
+            polygon_obj = polygon_vert_list[1]
+            polygon_vertices = cmds.ls(polygon_obj + '.vtx[*]', fl=True)
+            polygon_vert_list = polygon_vertices
+
+        random.shuffle(polygon_vert_list)
         try:
             density_percentage = int(self.rand_density_le.text())
             self.density_number = density_percentage * len(
@@ -371,6 +377,6 @@ class ScatterUI(QtWidgets.QDialog):
         except ValueError:
             self.density_number = 0
 
-        density_polygon_inst_list = polygon_vert_list[
-                                    :self.density_number]
+        density_polygon_inst_list = polygon_vert_list[:self.density_number]
         self.scatter_polygon_inst_on_vert(density_polygon_inst_list)
+
