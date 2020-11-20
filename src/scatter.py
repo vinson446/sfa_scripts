@@ -209,15 +209,9 @@ class ScatterUI(QtWidgets.QDialog):
 
     def create_connections(self):
         """Connect Signals and Slots"""
-        self.scatter_btn.clicked.connect(self.get_polygon_vert_list)
         self.rand_scale_btn.clicked.connect(self.rand_polygon_scale)
         self.rand_rot_btn.clicked.connect(self.rand_polygon_rot_offset)
-
-    @QtCore.Slot()
-    def get_polygon_vert_list(self):
-        polygon_vert_list = cmds.ls(selection=True, fl=True)
-        self.polygon_inst = polygon_vert_list[0]
-        self.scatter_polygon_inst_on_vert(polygon_vert_list)
+        self.scatter_btn.clicked.connect(self.get_rand_density)
 
     def scatter_polygon_inst_on_vert(self, polygon_list):
         """Scatter polygon instances on another object's vertices"""
