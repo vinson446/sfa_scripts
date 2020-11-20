@@ -2,6 +2,7 @@ from PySide2 import QtWidgets, QtCore
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
+import pymel.core as pm
 import random
 
 
@@ -378,13 +379,22 @@ class ScatterUI(QtWidgets.QDialog):
         """Scatter polygon instances on another object's vertices"""
         if self.scatter_to_normals is True:
             for inst in polygon_list:
-                vert_pos = cmds.polyNormalPerVertex(q=True,
-                                                    xyz=True)
+                mesh_vert = pm.MeshVertex(inst)
+                mesh_vert_normal = mesh_vert.getNormal()
+                up_vector = pm.dt.Vector(0.0, 1.0, 0.0)
+                tan = mesh_vert_normal.cross(up_vector).normal()
+                tan_cross = mesh_vert_normal.cross(tan).normal()
+                pos = cmds.xform([inst], q=True, ws=True, t=True)
+
+                matrix_trans = [tan_cross.x, tan_cross.y, tan_cross.z, 0.0,
+                                mesh_vert_normal.x, mesh_vert_normal.y,
+                                mesh_vert_normal.z, 0.0,
+                                tan.x, tan.y, tan.z, 0.0,
+                                pos[0], pos[1], pos[2], 1.0]
 
                 new_instance = cmds.instance(self.polygon_inst,
-                                             n="polygon_inst")
-                cmds.move(vert_pos[0], vert_pos[1], vert_pos[2],
-                          new_instance)
+                                             n='polygon_inst')
+                cmds.xform(new_instance, ws=True, matrix=matrix_trans)
 
             #cmds.delete(self.polygon_inst, "polygon_inst")
         else:
